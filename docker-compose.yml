@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    env_file:
+      - ./env/dev.env
+    restart: always
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    volumes:
+      - data:/var/lib/mysql
+  node:
+    build:
+      context: .
+      dockerfile: dockerfiles/node.dockerfile
+    env_file:
+      - ./env/dev.env
+    ports:
+      - '${PORT}:${PORT}'
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    stdin_open: true
+    tty: true
+
+volumes:
+  data:
+   
